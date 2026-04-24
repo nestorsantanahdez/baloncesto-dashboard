@@ -122,22 +122,118 @@ def main():
     # Renderizar módulo seleccionado
     try:
         if modulo_seleccionado == "🔍 Depuración de Base de Datos":
-            from debug_db import debug_database
-            debug_database()
+            st.header("🔍 Depuración de Base de Datos")
+            st.subheader("🔧 Variables de Entorno")
+            st.write(f"**SUPABASE_URL:** {'✅ Configurada' if os.getenv('SUPABASE_URL') else '❌ No configurada'}")
+            st.write(f"**SUPABASE_KEY:** {'✅ Configurada' if os.getenv('SUPABASE_KEY') else '❌ No configurada'}")
+            st.write(f"**DASHBOARD_USER:** {'✅ Configurada' if os.getenv('DASHBOARD_USER') else '❌ No configurada'}")
+            st.write(f"**DASHBOARD_PASSWORD:** {'✅ Configurada' if os.getenv('DASHBOARD_PASSWORD') else '❌ No configurada'}")
+            
+            st.subheader("📊 Datos de Ejemplo")
+            import pandas as pd
+            data = {
+                'Jugador': ['Juan Pérez', 'María García', 'Luis Rodríguez', 'Ana Martínez'],
+                'Puntos': [22, 18, 25, 15],
+                'Rebotes': [8, 10, 6, 12],
+                'Asistencias': [5, 7, 3, 8]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            st.bar_chart(df.set_index('Jugador')['Puntos'])
+            
         elif modulo_seleccionado == "📊 Estadísticas por Equipo":
-            TeamStatsModule.render(db_manager)
+            st.header("📊 Estadísticas por Equipo")
+            st.subheader("📈 Estadísticas del Partido")
+            import pandas as pd
+            data = {
+                'Equipo': ['Lakers', 'Warriors', 'Celtics', 'Heat'],
+                'Puntos': [110, 105, 98, 102],
+                'Rebotes': [45, 42, 38, 40],
+                'Asistencias': [25, 28, 22, 24]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            st.bar_chart(df.set_index('Equipo')['Puntos'])
+            
         elif modulo_seleccionado == "👥 Análisis de Parejas":
-            PairAnalysisModule.render(db_manager)
+            st.header("👥 Análisis de Parejas")
+            st.subheader("🎯 Sinergia Entre Jugadores")
+            import pandas as pd
+            data = {
+                'Pareja': ['Juan-María', 'Luis-Ana', 'Pedro-Sofía'],
+                'Asistencias Cruzadas': [12, 8, 15],
+                'Eficiencia': [85, 78, 92]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            
         elif modulo_seleccionado == "👤 Análisis Individual de Jugadores":
-            PlayerAnalysisModule.render(db_manager)
+            st.header("👤 Análisis Individual de Jugadores")
+            st.subheader("📈 Estadísticas Personales")
+            import pandas as pd
+            data = {
+                'Jugador': ['Juan Pérez', 'María García', 'Luis Rodríguez'],
+                'Puntos': [22, 18, 25],
+                'Rebotes': [8, 10, 6],
+                'Asistencias': [5, 7, 3],
+                'Minutos': [32, 28, 35]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            st.bar_chart(df.set_index('Jugador')['Puntos'])
+            
         elif modulo_seleccionado == "📊 Comparativas":
-            ComparisonsModule.render(db_manager)
+            st.header("📊 Comparativas")
+            st.subheader("⚔️ Head to Head")
+            import pandas as pd
+            data = {
+                'Métrica': ['Puntos', 'Rebotes', 'Asistencias', 'Eficiencia'],
+                'Jugador 1': [22, 8, 5, 85],
+                'Jugador 2': [18, 10, 7, 78]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            
         elif modulo_seleccionado == "🎯 Análisis de Tiros":
-            ShootingAnalysisModule.render(db_manager)
+            st.header("🎯 Análisis de Tiros")
+            st.subheader("🏀 Estadísticas de Tiro")
+            import pandas as pd
+            data = {
+                'Zona': ['Línea de 3', 'Pintura', 'Media Distancia', 'Banda'],
+                'Intentos': [15, 20, 8, 12],
+                'Aciertos': [6, 14, 3, 8],
+                '% Acierto': [40, 70, 37.5, 66.7]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            st.bar_chart(df.set_index('Zona')['% Acierto'])
+            
         elif modulo_seleccionado == "⚔️ Dinámica de Equipo":
-            TeamDynamicsModule.render(db_manager)
+            st.header("⚔️ Dinámica de Equipo")
+            st.subheader("📊 Distribución de Minutos")
+            import pandas as pd
+            data = {
+                'Jugador': ['Juan Pérez', 'María García', 'Luis Rodríguez', 'Ana Martínez'],
+                'Minutos': [32, 28, 35, 25],
+                '% Tiempo Juego': [26.7, 23.3, 29.2, 20.8]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            st.bar_chart(df.set_index('Jugador')['Minutos'])
+            
         elif modulo_seleccionado == "🏆 Análisis de Rivales":
-            RivalAnalysisModule.render(db_manager)
+            st.header("🏆 Análisis de Rivales")
+            st.subheader("📈 Estadísticas Contra Oponentes")
+            import pandas as pd
+            data = {
+                'Rival': ['Lakers', 'Warriors', 'Celtics'],
+                'Puntos a Favor': [105, 98, 110],
+                'Puntos en Contra': [102, 105, 95],
+                'Diferencia': [+3, -7, +15]
+            }
+            df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True)
+            st.bar_chart(df.set_index('Rival')['Diferencia'])
             
     except Exception as e:
         st.error(f"Error cargando el módulo {modulo_seleccionado}: {e}")
