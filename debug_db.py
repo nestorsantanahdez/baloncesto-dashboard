@@ -1,61 +1,65 @@
 import streamlit as st
 import pandas as pd
-from database import DatabaseManager
+import os
+from dotenv import load_dotenv
 
 def debug_database():
-    """Módulo de depuración para verificar la conexión y datos"""
+    """Módulo de depuración ultra-simple"""
     st.header("🔍 Depuración de Base de Datos")
     
+    # Mostrar variables de entorno
+    st.subheader("🔧 Variables de Entorno")
+    st.write(f"**SUPABASE_URL:** {'✅ Configurada' if os.getenv('SUPABASE_URL') else '❌ No configurada'}")
+    st.write(f"**SUPABASE_KEY:** {'✅ Configurada' if os.getenv('SUPABASE_KEY') else '❌ No configurada'}")
+    st.write(f"**DASHBOARD_USER:** {'✅ Configurada' if os.getenv('DASHBOARD_USER') else '❌ No configurada'}")
+    st.write(f"**DASHBOARD_PASSWORD:** {'✅ Configurada' if os.getenv('DASHBOARD_PASSWORD') else '❌ No configurada'}")
+    
+    # Intentar importar database
+    st.subheader("� Importación de Módulos")
     try:
-        # Inicializar conexión
-        db_manager = DatabaseManager()
-        st.success("✅ Conexión a base de datos exitosa")
+        from database import DatabaseManager
+        st.success("✅ DatabaseManager importado correctamente")
         
-        # Verificar tablas
-        st.subheader("📋 Verificación de Tablas")
-        
-        # Obtener equipos
+        # Intentar crear instancia
         try:
-            equipos = db_manager.get_equipos()
-            st.write(f"**Equipos encontrados:** {len(equipos)}")
-            if equipos:
-                st.write(equipos[:10])  # Mostrar primeros 10
+            db_manager = DatabaseManager()
+            st.success("✅ DatabaseManager creado correctamente")
+            
+            # Intentar obtener equipos
+            try:
+                equipos = db_manager.get_equipos()
+                st.write(f"**Equipos encontrados:** {len(equipos)}")
+                if equipos:
+                    st.write(equipos[:5])
+                else:
+                    st.warning("⚠️ No se encontraron equipos")
+            except Exception as e:
+                st.error(f"❌ Error obteniendo equipos: {e}")
+                st.code(str(e))
+                
         except Exception as e:
-            st.error(f"Error obteniendo equipos: {e}")
-        
-        # Obtener jugadores
-        try:
-            jugadores = db_manager.get_jugadores()
-            st.write(f"**Jugadores encontrados:** {len(jugadores)}")
-            if jugadores:
-                st.write(jugadores[:10])  # Mostrar primeros 10
-        except Exception as e:
-            st.error(f"Error obteniendo jugadores: {e}")
-        
-        # Obtener estadísticas
-        try:
-            stats = db_manager.get_estadisticas_jugadores()
-            st.write(f"**Estadísticas encontradas:** {len(stats)} filas")
-            if not stats.empty:
-                st.write("**Columnas disponibles:**")
-                st.write(stats.columns.tolist())
-                st.write("**Primeras filas:**")
-                st.dataframe(stats.head())
-        except Exception as e:
-            st.error(f"Error obteniendo estadísticas: {e}")
-        
-        # Verificar partidos
-        try:
-            partidos = db_manager.get_partidos()
-            st.write(f"**Partidos encontrados:** {len(partidos)} filas")
-            if not partidos.empty:
-                st.dataframe(partidos.head())
-        except Exception as e:
-            st.error(f"Error obteniendo partidos: {e}")
+            st.error(f"❌ Error creando DatabaseManager: {e}")
+            st.code(str(e))
             
     except Exception as e:
-        st.error(f"Error general: {e}")
-        st.error("Revisa las variables de entorno en Streamlit Cloud")
+        st.error(f"❌ Error importando DatabaseManager: {e}")
+        st.code(str(e))
+    
+    # Mostrar información del sistema
+    st.subheader("💻 Información del Sistema")
+    st.write(f"**Python versión:** {pd.__version__}")
+    st.write(f"**Streamlit versión:** {st.__version__}")
+    
+    # Datos de prueba
+    st.subheader("📊 Datos de Prueba")
+    data = {
+        'Jugador': ['Test 1', 'Test 2', 'Test 3'],
+        'Puntos': [10, 15, 20],
+        'Rebotes': [5, 8, 6]
+    }
+    df = pd.DataFrame(data)
+    st.dataframe(df)
+    st.bar_chart(df.set_index('Jugador')['Puntos'])
 
 if __name__ == "__main__":
     debug_database()
