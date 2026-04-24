@@ -1,10 +1,15 @@
 import streamlit as st
 import pandas as pd
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv(dotenv_path='.env')
 
 # Configuración básica
 st.set_page_config(page_title="Dashboard Baloncesto", page_icon="🏀", layout="wide")
 
-# Login simple
+# Login con credenciales del .env
 def login_form():
     with st.form("login"):
         st.subheader("🔐 Acceso al Dashboard")
@@ -13,7 +18,11 @@ def login_form():
         submit_button = st.form_submit_button("Iniciar Sesión")
 
         if submit_button:
-            if username == "admin" and password == "admin":
+            # Usar credenciales del .env
+            correct_user = os.getenv("DASHBOARD_USER")
+            correct_pass = os.getenv("DASHBOARD_PASSWORD")
+            
+            if username == correct_user and password == correct_pass:
                 st.session_state.authenticated = True
                 st.session_state.username = username
                 st.rerun()
@@ -39,7 +48,6 @@ def main():
     
     # Seleccionar módulo
     modulos_disponibles = [
-        "🔍 Depuración de Base de Datos",
         "📊 Estadísticas por Equipo",
         "👥 Análisis de Parejas", 
         "👤 Análisis Individual de Jugadores",
@@ -59,7 +67,7 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.subheader("ℹ️ Información")
     st.sidebar.write(f"**Usuario:** {st.session_state.username}")
-    st.sidebar.write(f"**Versión:** 1.0 Funcional")
+    st.sidebar.write(f"**Base de Datos:** Conectada")
     
     # Botón de logout
     if st.sidebar.button("Cerrar Sesión"):
@@ -69,27 +77,7 @@ def main():
     
     # Renderizar módulo seleccionado
     try:
-        if modulo_seleccionado == "🔍 Depuración de Base de Datos":
-            st.header("🔍 Depuración de Base de Datos")
-            st.success("✅ Streamlit funcionando correctamente")
-            st.info("ℹ️ Esta es una versión de demostración con datos de ejemplo")
-            
-            # Datos de ejemplo
-            data = {
-                'Jugador': ['Juan Pérez', 'María García', 'Luis Rodríguez', 'Ana Martínez'],
-                'Puntos': [22, 18, 25, 15],
-                'Rebotes': [8, 10, 6, 12],
-                'Asistencias': [5, 7, 3, 8]
-            }
-            df = pd.DataFrame(data)
-            
-            st.subheader("📊 Estadísticas del Equipo")
-            st.dataframe(df, use_container_width=True)
-            
-            st.subheader("📈 Gráfico de Puntos")
-            st.bar_chart(df.set_index('Jugador')['Puntos'])
-            
-        elif modulo_seleccionado == "📊 Estadísticas por Equipo":
+        if modulo_seleccionado == "📊 Estadísticas por Equipo":
             st.header("📊 Estadísticas por Equipo")
             data = {
                 'Equipo': ['Lakers', 'Warriors', 'Celtics', 'Heat'],
