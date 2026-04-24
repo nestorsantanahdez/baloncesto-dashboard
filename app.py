@@ -91,7 +91,8 @@ def main():
     
     # Seleccionar módulo
     modulos_disponibles = [
-        "📊 Estadísticas por Equipo",
+        "� Depuración de Base de Datos",
+        "� Estadísticas por Equipo",
         "👥 Análisis de Parejas", 
         "👤 Análisis Individual de Jugadores",
         "📊 Comparativas",
@@ -120,7 +121,10 @@ def main():
     
     # Renderizar módulo seleccionado
     try:
-        if modulo_seleccionado == "📊 Estadísticas por Equipo":
+        if modulo_seleccionado == "🔍 Depuración de Base de Datos":
+            from debug_db import debug_database
+            debug_database()
+        elif modulo_seleccionado == "📊 Estadísticas por Equipo":
             TeamStatsModule.render(db_manager)
         elif modulo_seleccionado == "👥 Análisis de Parejas":
             PairAnalysisModule.render(db_manager)
