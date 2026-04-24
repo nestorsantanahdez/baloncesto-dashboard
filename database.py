@@ -11,9 +11,18 @@ class DatabaseManager:
     
     def __init__(self):
         try:
+            # Obtener variables de entorno directamente
+            supabase_url = os.getenv("SUPABASE_URL")
+            supabase_key = os.getenv("SUPABASE_KEY")
+            
+            if not supabase_url:
+                raise Exception("supabase_url is required")
+            if not supabase_key:
+                raise Exception("supabase_key is required")
+            
             self.client = supabase.create_client(
-                Config.SUPABASE_URL,
-                Config.SUPABASE_KEY
+                supabase_url,
+                supabase_key
             )
         except Exception as e:
             raise Exception(f"Error connecting to Supabase: {e}")
@@ -64,6 +73,53 @@ class DatabaseManager:
         except Exception as e:
             print(f"Error getting jugadores: {e}")
             return []
+    
+    def get_estadisticas_equipos(self):
+        """Obtiene estadísticas de todos los equipos"""
+        try:
+            response = self.client.table('jugadores_partido').select('*').execute()
+            if not response.data:
+                return pd.DataFrame()
+            
+            df = pd.DataFrame(response.data)
+            
+            # Agrupar por equipo y calcular estadísticas
+            if 'equipo_nombre' in df.columns:
+                stats = df.groupby('equipo_nombre').agg({
+                    'puntos': 'sum',
+                    'rebotes_tot': 'sum',
+                    'asistencias': 'sum',
+                    'valoracion': 'mean'
+                }).reset_index()
+                stats.columns = ['equipo_nombre', 'puntos', 'rebotes_tot', 'asistencias', 'valoracion']
+                return stats
+            return pd.DataFrame()
+        except Exception as e:
+            print(f"Error getting estadisticas equipos: {e}")
+            return pd.DataFrame()
+    
+    def get_estadisticas_equipo(self, equipo):
+        """Obtiene estadísticas de un equipo específico"""
+        try:
+            response = self.client.table('jugadores_partido').select('*').eq('equipo_nombre', equipo).execute()
+            if not response.data:
+                return pd.DataFrame()
+            
+            df = pd.DataFrame(response.data)
+            
+            # Calcular estadísticas del equipo
+            stats = {
+                'equipo_nombre': [equipo],
+                'puntos': [df['puntos'].sum() if 'puntos' in df.columns else 0],
+                'rebotes_tot': [df['rebotes_tot'].sum() if 'rebotes_tot' in df.columns else 0],
+                'asistencias': [df['asistencias'].sum() if 'asistencias' in df.columns else 0],
+                'valoracion': [df['valoracion'].mean() if 'valoracion' in df.columns else 0]
+            }
+            
+            return pd.DataFrame(stats)
+        except Exception as e:
+            print(f"Error getting estadisticas equipo: {e}")
+            return pd.DataFrame()
     
     def get_estadisticas_jugadores(self, equipo=None, jugador=None):
         """Obtiene estadísticas de jugadores sin filtro de fechas"""
