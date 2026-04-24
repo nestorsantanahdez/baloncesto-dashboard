@@ -122,10 +122,10 @@ class ComparisonsModule:
         columnas_mostrar = ['equipo_nombre'] + metricas + [col for col in df_comparacion_avanzado.columns if col in ['PER', 'TS%', 'ORtg', 'USG%']]
         
         df_final = df_comparacion_avanzado[columnas_mostrar].copy()
-        df_final.columns = [
-            'Equipo'] + [col.upper().replace('_', ' ') for col in metricas] + 
+        df_final.columns = (
+            ['Equipo'] + [col.upper().replace('_', ' ') for col in metricas] + 
             [col for col in ['PER', 'TS%', 'ORtg', 'USG%'] if col in df_final.columns]
-        ]
+        )
         
         st.dataframe(df_final, use_container_width=True)
     
