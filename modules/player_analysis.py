@@ -154,7 +154,7 @@ class PlayerAnalysisModule:
                     st.write(f"- **ORtg**: {advanced_stats.get('ORtg', 0)}")
                 
                 with col2:
-                    st.write(**Estilo de Juego**")
+                    st.write("**Estilo de Juego**")
                     st.write(f"- **PACE**: {advanced_stats.get('PACE', 0)}")
                     st.write(f"- **USG%**: {advanced_stats.get('USG%', 0)}%")
                     st.write(f"- **AST/TOV**: {advanced_stats.get('AST/TOV', 0)}")
